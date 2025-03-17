@@ -24,7 +24,7 @@ source "$SCRIPT_DIR/../../utils/scripts/utils.sh" || exit 1
 # ------------------------------------------------------------------------- Envs
 
 # Check whether the .third-parties' dir is available
-THIRD_PARTIES="$SCRIPT_DIR/../../.third-parties/"
+THIRD_PARTIES="$SCRIPT_DIR/../../.third-parties"
 [ -d "$THIRD_PARTIES" ] || die "[ERROR] $THIRD_PARTIES does not exist!"
 
 # Check whether Java 8 has been installed and it is available
