@@ -1,0 +1,75 @@
+# ------------------------------------------------------------------------- Args
+#
+# Usage:
+# job.sh
+#   --project <project under test's name, e.g., 100_jgaap>
+#   --class <class under test's name, e.g., AnalysisDriver>
+#   --seed <random seed, e.g., 0>
+#   --report_dir_path <path, e.g., reports/100_jgaap/AnalysisDriver/0/>
+#   --test_dir_path <path, e.g., tests/100_jgaap/AnalysisDriver/0/>
+#   [help] [> <path to job log file, e.g., logs/100_jgaap/AnalysisDriver/0/job.log> 2>&1]
+
+# Print out this script's arguments (which could help any debug session)
+echo "${BASH_SOURCE[0]} $@"
+
+USAGE="Usage: ${BASH_SOURCE[0]} \
+  --project <project under test's name, e.g., 100_jgaap> \
+  --class <class under test's name, e.g., AnalysisDriver> \
+  --seed <random seed, e.g., 0> \
+  --report_dir_path <path, e.g., reports/100_jgaap/AnalysisDriver/0/> \
+  --test_dir_path <path, e.g., tests/100_jgaap/AnalysisDriver/0/> \
+  [help] [> <path to job log file, e.g., logs/100_jgaap/AnalysisDriver/0/job.log> 2>&1]"
+if [ "$#" -ne "1" ] && [ "$#" -ne "10" ]; then
+  die "$USAGE"
+fi
+
+PROJECT=""
+CLASS=""
+SEED=""
+REPORT_DIR_PATH=""
+TEST_DIR_PATH=""
+
+while [[ "$1" = --* ]]; do
+  OPTION=$1; shift
+  case $OPTION in
+    (--project)
+      PROJECT=$1;
+      shift;;
+    (--class)
+      CLASS=$1;
+      shift;;
+    (--seed)
+      SEED=$1;
+      shift;;
+    (--report_dir_path)
+      REPORT_DIR_PATH=$1;
+      shift;;
+    (--test_dir_path)
+      TEST_DIR_PATH=$1;
+      shift;;
+    (--help)
+      echo "$USAGE"
+      exit 0
+    (*)
+      die "$USAGE";;
+  esac
+done
+
+# Check whether all arguments have been initialized
+[ "$PROJECT" != "" ]         || die "[ERROR] Missing --project argument!"
+[ "$CLASS" != "" ]           || die "[ERROR] Missing --class argument!"
+[ "$SEED" != "" ]            || die "[ERROR] Missing --seed argument!"
+[ "$REPORT_DIR_PATH" != "" ] || die "[ERROR] Missing --report_dir_path argument!"
+[ "$TEST_DIR_PATH" != "" ]   || die "[ERROR] Missing --test_dir_path argument!"
+
+# Check whether required directories/files do exist
+[ -d "$REPORT_DIR_PATH" ]   || die "[ERROR] $REPORT_DIR_PATH does not exist!"
+[ -d "$TEST_DIR_PATH" ]     || die "[ERROR] $TEST_DIR_PATH does not exist!"
+
+# Clean up output directories, in case of re-run of a unsuccessfully execution
+# to avoid inconsistent data
+find "$REPORT_DIR_PATH" -type f -exec rm -f {} \;
+find "$TEST_DIR_PATH" -type f -exec rm -f {} \;
+rm -rf "$REPORT_DIR_PATH"
+rm -rf "$TEST_DIR_PATH"
+

@@ -1,0 +1,94 @@
+  # Run EvoSuite on each buggy class
+  java -Djava.io.tmpdir="$TMP_DIR_PATH" -Xms4056M -Xmx4056M -jar "$TOOLS_DIR/test-generation-tools/evosuite-vanilla.jar" \
+    -Dsearch_budget=180 `# As suggested in the paper` \
+    `# Sina Shamshiri, René Just, José Miguel Rojas, Gordon Fraser, Phil McMinn, and Andrea Arcuri` \
+    `# Do Automatically Generated Unit Tests Find Real Faults? An Empirical Study of Effectiveness and Challenges` \
+    `# IEEE International Conference on Automated Software Engineering (ASE), 2015` \
+    -seed "$SEED" \
+    -Dgroup_id="$PROJECT-$CLASS" \
+    -Dconfiguration_id="vanilla" \
+    -Dreport_dir="$REPORT_DIR_PATH" \
+    -Dtest_dir="$TEST_DIR_PATH" \
+    -class "$CLASS" \
+    -mem 8192 -permSize 256 `# As suggested in the paper` \
+    `# Anjana Perera, Aldeida Aleti, Burak Turhan, and Marcel Bohme` \
+    `# An Experimental Assessment of Using Theoretical Defect Predictors to Guide Search-Based Software Testing` \
+    `# IEEE Transactions on Software Engineering (TSE), 2023` \
+    -Dshow_progress=false `# true by default, disable to avoid having HUGE log files` \
+    -Duse_deprecated=true `# false by default, enable to allow EvoSuite to explore ALL methods` \
+    -Dp_functional_mocking=0.8 `# 0.0 by default, [0.8 has been suggested as the optimal value](https://github.com/EvoSuite/evosuite/blob/v1.2.0/client/src/main/java/org/evosuite/Properties.java#L288)` \
+    -Dp_reflection_on_private=0.5 `# 0.0 by default, [0.5 has been suggested as the optimal value](https://github.com/EvoSuite/evosuite/blob/v1.2.0/client/src/main/java/org/evosuite/Properties.java#L280)` \
+    -Djunit_check=false `# true by default, disable as any flaky / non-compiling test will then be removed by the pipeline` \
+    -Dsave_all_data=false `# true by default, disable to avoid having data files` \
+    -Dminimize=false `# true by default, false as suggested in the paper` \
+    `# Anjana Perera, Aldeida Aleti, Burak Turhan, and Marcel Bohme` \
+    `# An Experimental Assessment of Using Theoretical Defect Predictors to Guide Search-Based Software Testing` \
+    `# IEEE Transactions on Software Engineering (TSE), 2023` \
+    -Dminimization_timeout=600 `# 60 by default, more time to allow EvoSuite to complete the minimization step successfully` \
+    -Dassertion_timeout=600 `# 60 by default, more time to allow EvoSuite to complete the generation of assertions successfully` \
+    -Dglobal_timeout=600 `# 120 by default, more time to allow EvoSuite to complete all steps` \
+    -Dextra_timeout=600 `# 60 by default, more time to allow EvoSuite to complete all steps` \
+    -Dtimeout=6000 `# 3000 milliseconds to execute the body of a test by default; twice that time to avoid tests failing later in the pipeline due to time constraints` \
+    -Dassertion_strategy="ALL" `# As suggested in the paper` \
+    `# Sina Shamshiri, René Just, José Miguel Rojas, Gordon Fraser, Phil McMinn, and Andrea Arcuri` \
+    `# Do Automatically Generated Unit Tests Find Real Faults? An Empirical Study of Effectiveness and Challenges` \
+    `# IEEE International Conference on Automated Software Engineering (ASE), 2015` \
+    -Dcriterion="LINE:BRANCH:EXCEPTION:WEAKMUTATION:OUTPUT:METHOD:METHODNOEXCEPTION:CBRANCH" \
+    -Danalysis_criteria="LINE:BRANCH:EXCEPTION:WEAKMUTATION:OUTPUT:METHOD:METHODNOEXCEPTION:CBRANCH" \
+    -Doutput_variables="configuration_id,\
+                        group_id,\
+                        Random_Seed,\
+                        TARGET_CLASS,\
+                        Size,\
+                        Result_Size,\
+                        Length,\
+                        Result_Length,\
+                        search_budget,\
+                        Total_Time,\
+                        criterion,\
+                        algorithm,\
+                        secondary_objectives,\
+                        Fitness_Evaluations,\
+                        Generations,\
+                        population,\
+                        mutation_rate,\
+                        crossover_function,\
+                        crossover_rate,\
+                        selection_function,\
+                        rank_bias,\
+                        tournament_size,\
+                        elite,\
+                        LineCoverage,\
+                        LineCoverageBitString,\
+                        BranchCoverage,\
+                        BranchCoverageBitString,\
+                        ExceptionCoverage,\
+                        ExceptionCoverageBitString,\
+                        WeakMutationScore,\
+                        WeakMutationCoverageBitString,\
+                        OutputCoverage,\
+                        OutputCoverageBitString,\
+                        MethodCoverage,\
+                        MethodCoverageBitString,\
+                        MethodNoExceptionCoverage,\
+                        MethodNoExceptionCoverageBitString,\
+                        CBranchCoverage,\
+                        CBranchCoverageBitString" \
+    -generateMOSuite -Dstrategy=MOSUITE || die "[ERROR] Failed to run EvoSuite on $PROJECT-$CLASS!"
+
+  # Sanity checks
+
+  ## Did EvoSuite generate anything?  In other words, does the `statistics.csv` file exist and it is not empty?
+  report_file_path="$REPORT_DIR_PATH/statistics.csv"
+  [ -s "$report_file_path" ] || die "[ERROR] $report_file_path does not exist or it is empty!"
+  fix_line_break "$report_file_path" || die
+  ## Does the `statistics.csv` contain any data?
+  num_rows_stats_file=$(wc -l < "$report_file_path")
+  [ "$num_rows_stats_file" -eq "2" ] || die "[ERROR] The statistics file ($report_file_path) generated by EvoSuite has no data!"
+
+  ## Did EvoSuite generate at least one test suite or as many test suites as the number of classes it was invoked on?
+  num_gen_test_suites=$(find "$TEST_DIR_PATH" -type f -name "*ESTest.java" | wc -l)
+  [ "$num_gen_test_suites" -eq "1" ] || die "[ERROR] EvoSuite failed to generate any test suite!"
+  ## Are the generated test suites not empty?
+  num_empty_gen_test_suites=$(find "$TEST_DIR_PATH" -type f -name "*ESTest.java" -size 0 | wc -l)
+  [ "$num_empty_gen_test_suites" -eq "0" ] || die "[ERROR] There are $num_empty_gen_test_suites empty test suites!"

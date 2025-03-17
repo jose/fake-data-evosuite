@@ -1,0 +1,10 @@
+# ------------------------------------------------------------------------- Main
+
+# Create a temporary directory
+TMP_ROOT_DIR="/tmp"
+TMP_DIR_PATH="$TMP_ROOT_DIR/$USER-$$-$(echo $RANDOM | md5sum | cut -f1 -d' ')-$PROJECT-$CLASS"
+[ ! -d "$TMP_DIR_PATH" ] || die "[ERROR] The pseudo-random $TMP_DIR_PATH directory already exists!"
+mkdir -p "$TMP_DIR_PATH" || die "[ERROR] Failed to create $TMP_DIR_PATH!"
+
+pushd . > /dev/null 2>&1
+cd "$SF100_DIR/$PROJECT"

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# ------------------------------------------------------------------------------
+# This script runs a job (i.e., an EvoSuite execution) on a specific SF110 class.
+# ------------------------------------------------------------------------------
+
+# Disable any pre-defined Java option
+unset _JAVA_OPTIONS
+
+source "___UTILS_SCRIPT_PATH___" || exit 1
+
