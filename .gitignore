@@ -1,6 +1,10 @@
 # ----------------------------------------------------------------------- Custom
 
-TBA
+# Ignore everything under `.third-parties/`, except the `get-third-parties.sh`
+# script and the `get-libraries.R` script
+.third-parties/*
+!.third-parties/get-third-parties.sh
+!.third-parties/get-libraries.R
 
 # ------------------------------------------------------------------------ Linux
 
