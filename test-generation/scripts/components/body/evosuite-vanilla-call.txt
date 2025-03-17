@@ -1,5 +1,5 @@
   # Run EvoSuite on each buggy class
-  java -Djava.io.tmpdir="$TMP_DIR_PATH" -Xms4056M -Xmx4056M -jar "$THIRD_PARTIES/test-generation-tools/evosuite-vanilla.jar" \
+  java -Djava.io.tmpdir="$TMP_DIR_PATH" -jar "$THIRD_PARTIES/test-generation-tools/evosuite-vanilla.jar" \
     -Dsearch_budget=180 `# As suggested in the paper` \
     `# Sina Shamshiri, René Just, José Miguel Rojas, Gordon Fraser, Phil McMinn, and Andrea Arcuri` \
     `# Do Automatically Generated Unit Tests Find Real Faults? An Empirical Study of Effectiveness and Challenges` \
@@ -10,7 +10,7 @@
     -Dreport_dir="$REPORT_DIR_PATH" \
     -Dtest_dir="$TEST_DIR_PATH" \
     -class "$CLASS" \
-    -mem 8192 -permSize 256 `# As suggested in the paper` \
+    -mem 8192 `# As suggested in the paper` \
     `# Anjana Perera, Aldeida Aleti, Burak Turhan, and Marcel Bohme` \
     `# An Experimental Assessment of Using Theoretical Defect Predictors to Guide Search-Based Software Testing` \
     `# IEEE Transactions on Software Engineering (TSE), 2023` \

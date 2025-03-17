@@ -3,9 +3,9 @@
 UTILS_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
 USER_HOME_DIR="$(cd ~ && pwd)"
 
-export _JAVA_OPTIONS="-Xmx8192M -XX:MaxHeapSize=1024M"
+export _JAVA_OPTIONS="-Xmx8192M -Xms2048M -XX:MaxHeapSize=4056M"
 export MAVEN_OPTS="-Xmx1024M"
-export ANT_OPTS="-Xmx2048M -XX:MaxHeapSize=1024M"
+export ANT_OPTS="-Xmx2048M -Xms2048M -XX:MaxHeapSize=4056M"
 
 #
 # Print error message to the stdout and exit.
