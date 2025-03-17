@@ -259,7 +259,8 @@ for batch_id in $(seq 1 $number_of_batches_to_run); do
   if [[ $host_name == "iceberg-"* ]] || [[ $host_name == "sharc-"* ]] || [[ $host_name == *".polaris.leeds.ac.uk" ]] || [[ $host_name == *".bob.macc.fct.pt" ]] || [ "$host_name" == "slurmsub.grid.fe.up.pt" ] || [[ $host_name == "login-node" ]]; then
     cat "$batch_jobs_file_path" >> "$batch_script_file_path"
   else
-    echo "parallel --progress -j $(cat /proc/cpuinfo | grep 'cpu cores' | sort -u | cut -f2 -d':' | cut -f2 -d' ') -a $batch_jobs_file_path" >> "$batch_script_file_path"
+    number_of_cpus=$(_get_number_of_cpus)
+    echo "parallel --progress -j $number_of_cpus -a $batch_jobs_file_path" >> "$batch_script_file_path"
   fi
 
   echo ""               >> "$batch_script_file_path"
