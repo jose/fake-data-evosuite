@@ -195,7 +195,7 @@ done
 echo "[DEBUG] number of jobs to run: $number_of_jobs_to_run"
 
 # Number of batches that could be executed in parallel, given machine's limits
-number_of_jobs_per_batch=$(echo "$number_of_jobs_to_run / $max_number_batches" | bc -l | python -c "import math; print int(math.ceil(float(raw_input())))")
+number_of_jobs_per_batch=$(echo "$number_of_jobs_to_run / $max_number_batches" | bc -l | python -c "import math; print(int(math.ceil(float(input()))))")
 echo "[DEBUG] number of jobs per batch: $number_of_jobs_per_batch"
 
 # Create batches
