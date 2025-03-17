@@ -256,18 +256,8 @@ for batch_id in $(seq 1 $number_of_batches_to_run); do
     "$batch_script_file_path" \
     "$batch_total_time_in_seconds" > "$batch_script_file_path" || die "[ERROR] Failed to init batch file $batch_script_file_path!"
 
-  if [[ $host_name == "iceberg-"* ]] || [[ $host_name == "sharc-"* ]] || [[ $host_name == *".polaris.leeds.ac.uk" ]]; then
-    echo "while read -r task; do"                      >> "$batch_script_file_path"
-    echo "  echo \"[DEBUG] About to run task \$task\"" >> "$batch_script_file_path"
-    echo "  eval \$task"                               >> "$batch_script_file_path"
-    echo "done < <(cat \"$batch_jobs_file_path\")"     >> "$batch_script_file_path"
-  elif [[ $host_name == *".bob.macc.fct.pt" ]] || [ "$host_name" == "slurmsub.grid.fe.up.pt" ] || [[ $host_name == "login-node" ]]; then
-    echo "while read -r task; do"                         >> "$batch_script_file_path"
-    echo "  echo \"[DEBUG] About to srun task \$task\""   >> "$batch_script_file_path"
-    echo "  srun --nodes=1 --ntasks=1 \$task &"           >> "$batch_script_file_path"
-    echo "done < <(cat \"$batch_jobs_file_path\")"        >> "$batch_script_file_path"
-    echo "echo \"[DEBUG] Waiting for tasks to complete\"" >> "$batch_script_file_path"
-    echo "wait # for completion of background tasks"      >> "$batch_script_file_path"
+  if [[ $host_name == "iceberg-"* ]] || [[ $host_name == "sharc-"* ]] || [[ $host_name == *".polaris.leeds.ac.uk" ]] || [[ $host_name == *".bob.macc.fct.pt" ]] || [ "$host_name" == "slurmsub.grid.fe.up.pt" ] || [[ $host_name == "login-node" ]]; then
+    cat "$batch_jobs_file_path" >> "$batch_script_file_path"
   else
     echo "parallel --progress -j $(cat /proc/cpuinfo | grep 'cpu cores' | sort -u | cut -f2 -d':' | cut -f2 -d' ') -a $batch_jobs_file_path" >> "$batch_script_file_path"
   fi
