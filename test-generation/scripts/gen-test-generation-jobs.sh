@@ -23,17 +23,17 @@ source "$SCRIPT_DIR/../../utils/scripts/utils.sh" || exit 1
 
 # ------------------------------------------------------------------------- Envs
 
-# Check whether the tools's dir is available
-TOOLS_DIR="$SCRIPT_DIR/../../tools/"
-[ -d "$TOOLS_DIR" ] || die "[ERROR] $TOOLS_DIR does not exist!"
+# Check whether the .third-parties' dir is available
+THIRD_PARTIES="$SCRIPT_DIR/../../.third-parties/"
+[ -d "$THIRD_PARTIES" ] || die "[ERROR] $THIRD_PARTIES does not exist!"
 
 # Check whether Java 8 has been installed and it is available
-JAVA_HOME="$TOOLS_DIR/jdk-8"
-[ -d "$JAVA_HOME" ] || die "[ERROR] $JAVA_HOME does not exist! Did you run $TOOLS_DIR/get-tools.sh?"
+JAVA_HOME="$THIRD_PARTIES/jdk-8"
+[ -d "$JAVA_HOME" ] || die "[ERROR] $JAVA_HOME does not exist! Did you run $THIRD_PARTIES/get-third-parties.sh?"
 
 # Check whether the SF110 dataset is available
-SF100_DIR="$TOOLS_DIR/SF110"
-[ -d "$SF100_DIR" ] || die "[ERROR] $SF100_DIR does not exist! Did you run $TOOLS_DIR/get-tools.sh?"
+SF100_DIR="$THIRD_PARTIES/SF110"
+[ -d "$SF100_DIR" ] || die "[ERROR] $SF100_DIR does not exist! Did you run $THIRD_PARTIES/get-third-parties.sh?"
 
 # ------------------------------------------------------------------------- Args
 
@@ -131,9 +131,9 @@ while read -r row; do
     echo "#"                                                    >> "$job_script_file_path"
     echo "# timefactor:1"                                       >> "$job_script_file_path"
     echo "source \"$SCRIPT_DIR/../../utils/scripts/utils.sh\""  >> "$job_script_file_path"
-    echo "export TOOLS_DIR=\"$TOOLS_DIR\""                      >> "$job_script_file_path"
+    echo "export THIRD_PARTIES=\"$THIRD_PARTIES\""              >> "$job_script_file_path"
     echo "export JAVA_HOME=\"$JAVA_HOME\""                      >> "$job_script_file_path"
-    echo "export SF100_DIR=\"$SF100_DIR\""                        >> "$job_script_file_path"
+    echo "export SF100_DIR=\"$SF100_DIR\""                      >> "$job_script_file_path"
     echo "bash $master_job_script_file_path \
   --project \"$project_name\" \
   --class \"$class\" \
