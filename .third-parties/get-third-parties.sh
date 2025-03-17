@@ -155,8 +155,32 @@ rm -f "$SCRIPT_DIR/$MVN_FILE" # clean up
 # http://www.evosuite.org/files/SF110-20130704.zip
 #
 
-wget http://www.evosuite.org/files/SF110-20130704.zip
-# TODO
+echo ""
+echo "Setting up SF110..."
+
+SF100_VERSION="20130704"
+SF100_FILE="SF110-$SF100_VERSION.zip"
+SF100_URL="http://www.evosuite.org/files/$SF100_FILE"
+SF100_TMP_DIR="$SCRIPT_DIR/SF110-20130704"
+SF100_DIR="$SCRIPT_DIR/SF110"
+
+# remove any previous file or directory
+rm -rf "$SCRIPT_DIR/$SF100_FILE" "$SF100_TMP_DIR"
+
+# get file
+wget --no-check-certificate -np -nv "$SF100_URL" -O "$SCRIPT_DIR/$SF100_FILE"
+if [ "$?" -ne "0" ] || [ ! -s "$SCRIPT_DIR/$SF100_FILE" ]; then
+  die "[ERROR] Failed to download $SF100_URL!"
+fi
+
+unzip "$SCRIPT_DIR/$SF100_FILE" # extract it
+if [ "$?" -ne "0" ] || [ ! -d "$SF100_TMP_DIR" ]; then
+  die "[ERROR] Failed to extract $SCRIPT_DIR/$SF100_FILE!"
+fi
+
+mv -f "$SF100_TMP_DIR" "$SF100_DIR" || die "[ERROR] Failed to move $SF100_TMP_DIR to $SF100_DIR!"
+
+rm -f "$SCRIPT_DIR/$SF100_FILE" # clean up
 
 #
 # Setting test generation tools/approaches
