@@ -130,7 +130,6 @@ while read -r row; do
     echo "#!/usr/bin/env bash"                                   > "$job_script_file_path"
     echo "#"                                                    >> "$job_script_file_path"
     echo "# timefactor:1"                                       >> "$job_script_file_path"
-    echo "source \"$SCRIPT_DIR/../../utils/scripts/utils.sh\""  >> "$job_script_file_path"
     echo "export THIRD_PARTIES=\"$THIRD_PARTIES\""              >> "$job_script_file_path"
     echo "export JAVA_HOME=\"$JAVA_HOME\""                      >> "$job_script_file_path"
     echo "export SF100_DIR=\"$SF100_DIR\""                      >> "$job_script_file_path"
