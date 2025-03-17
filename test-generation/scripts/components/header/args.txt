@@ -68,8 +68,6 @@ done
 
 # Clean up output directories, in case of re-run of a unsuccessfully execution
 # to avoid inconsistent data
-find "$REPORT_DIR_PATH" -type f -exec rm -f {} \;
-find "$TEST_DIR_PATH" -type f -exec rm -f {} \;
-rm -rf "$REPORT_DIR_PATH"
-rm -rf "$TEST_DIR_PATH"
+find "$REPORT_DIR_PATH" -exec rm -rf {} \;
+find "$TEST_DIR_PATH" -exec rm -rf {} \;
 
