@@ -79,42 +79,6 @@ javac -version > /dev/null 2>&1 || die "[ERROR] Failed to find the javac executa
 rm -f "$SCRIPT_DIR/$JDK_FILE" # Clean up
 
 #
-# Download Apache Ant
-#
-
-echo ""
-echo "Setting up Ant..."
-
-ANT_VERSION="1.10.12"
-ANT_FILE="apache-ant-$ANT_VERSION-bin.zip"
-ANT_URL="https://archive.apache.org/dist/ant/binaries/$ANT_FILE"
-ANT_TMP_DIR="$SCRIPT_DIR/apache-ant-$ANT_VERSION"
-ANT_HOME_DIR="$SCRIPT_DIR/apache-ant"
-
-# Remove any previous file or directory
-rm -rf "$SCRIPT_DIR/$ANT_FILE" "$ANT_TMP_DIR" "$ANT_HOME_DIR"
-
-# Get file
-wget --no-check-certificate -np -nv "$ANT_URL" -O "$SCRIPT_DIR/$ANT_FILE"
-if [ "$?" -ne "0" ] || [ ! -s "$SCRIPT_DIR/$ANT_FILE" ]; then
-  die "[ERROR] Failed to download $ANT_URL!"
-fi
-
-unzip "$ANT_FILE" # Extract it
-if [ "$?" -ne "0" ] || [ ! -d "$ANT_TMP_DIR" ]; then
-  die "[ERROR] Failed to extract $SCRIPT_DIR/$ANT_FILE!"
-fi
-
-mv -f "$ANT_TMP_DIR" "$ANT_HOME_DIR" || die "[ERROR] Failed to move $ANT_TMP_DIR to $ANT_HOME_DIR!"
-
-# Add Apache Ant to the PATH for subsequent commands
-export PATH="$ANT_HOME_DIR/bin:$PATH"
-# Check whether 'ant' is available
-ant -version > /dev/null 2>&1 || die "[ERROR] Failed to find the ant executable."
-
-rm -f "$SCRIPT_DIR/$ANT_FILE" # Clean up
-
-#
 # Download Apache Maven
 #
 
